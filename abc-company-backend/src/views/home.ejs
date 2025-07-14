@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home Page</title>
+    <style>
+      body {
+        background-color: #fff7ec;
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+      }
+
+      button {
+        margin-right: 10px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <section>
+        <h1>Heading</h1>
+        <form>
+          <input type="hidden" name="id" />
+          <textarea
+            placeholder="Enter Main Heading..."
+            rows="4"
+            cols="50"
+            name="title"
+            id="title"
+            required
+            readonly
+          ></textarea>
+          <div>
+            <button id="save" type="submit">Save</button>
+            <button id="edit" type="button">Edit</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const textarea = document.querySelector("textarea");
+        const editButton = document.querySelector("#edit");
+        const saveButton = document.querySelector("#save");
+
+        editButton.addEventListener("click", function () {
+          textarea.removeAttribute("readonly");
+          textarea.focus();
+          editButton.style.display = "none";
+        });
+
+        saveButton.addEventListener("click", function () {
+          textarea.setAttribute("readonly", "readonly");
+          editButton.style.display = "block";
+        });
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const title = document.querySelector("#title").value;
+
+          fetch("/api/v1/content", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title: title }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
